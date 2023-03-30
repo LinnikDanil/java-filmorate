@@ -9,7 +9,7 @@ import java.time.LocalDate;
 import static org.junit.jupiter.api.Assertions.*;
 
 class FilmControllerTest {
-    FilmController filmController = new FilmController();;
+    FilmController filmController = new FilmController();
 
     @Test
     void validateOk() throws ValidationException {
