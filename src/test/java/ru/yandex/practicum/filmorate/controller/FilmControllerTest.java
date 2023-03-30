@@ -46,9 +46,7 @@ class FilmControllerTest {
         Film film = new Film(
                 1,
                 "test 1",
-                "Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod " +
-                        "tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, " +
-                        "quis nostrud exerci tation",
+                "1".repeat(201),
                 LocalDate.of(2000, 10, 10),
                 3
         );

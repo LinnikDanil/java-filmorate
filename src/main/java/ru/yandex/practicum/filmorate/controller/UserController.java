@@ -27,10 +27,7 @@ public class UserController {
     @PostMapping
     public User create(@Valid @RequestBody User user) {
         User validateUser = validateUser(user);
-        if (users.containsKey(validateUser.getId())) {
-            return null;
-        }
-        user.setId(setId());
+        validateUser.setId(setId());
         users.put(validateUser.getId(), validateUser);
         log.debug(validateUser.toString());
         return validateUser;

@@ -25,9 +25,6 @@ public class FilmController {
     @PostMapping
     public Film create(@Valid @RequestBody Film film) {
         validateFilm(film);
-        if (films.containsKey(film.getId())) {
-            return null;
-        }
         film.setId(setId());
         films.put(film.getId(), film);
         log.debug(film.toString());
