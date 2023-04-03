@@ -28,7 +28,7 @@ public class Film {
     @Positive
     private long duration; //Duration не проходит тесты, почитал в пачке, говорят ставить лонг
 
-    final private Set<Integer> likes = new HashSet<>();
+    private final Set<Integer> likes = new HashSet<>();
 
     public void addLike(int filmId) {
         likes.add(filmId);
