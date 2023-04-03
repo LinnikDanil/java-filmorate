@@ -24,7 +24,7 @@ public class UserController {
         this.userStorage = userStorage;
         this.userService = userService;
     }
-    
+
     @GetMapping
     public Collection<User> getAll() {
         return userStorage.getAllUsers();
