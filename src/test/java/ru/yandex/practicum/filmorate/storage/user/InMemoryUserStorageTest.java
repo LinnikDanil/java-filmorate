@@ -9,11 +9,11 @@ import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class InMemoryUserStorageTest extends UserStorageTest<InMemoryUserStorage>{
+class InMemoryUserStorageTest extends UserStorageTest<InMemoryUserStorage> {
 
     @Override
     @BeforeEach
-    void createStorage(){
+    void createStorage() {
         userStorage = new InMemoryUserStorage();
     }
 
@@ -65,7 +65,7 @@ class InMemoryUserStorageTest extends UserStorageTest<InMemoryUserStorage>{
 
     @Test
     void validateWithEmptyLogin() {
-        User user =  User.builder()
+        User user = User.builder()
                 .email("test@mail.ru")
                 .login("")
                 .name("name")

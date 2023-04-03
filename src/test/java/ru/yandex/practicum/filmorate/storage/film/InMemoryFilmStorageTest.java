@@ -10,11 +10,11 @@ import java.time.LocalDate;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class InMemoryFilmStorageTest extends FilmStorageTest<InMemoryFilmStorage>{
+class InMemoryFilmStorageTest extends FilmStorageTest<InMemoryFilmStorage> {
 
     @Override
     @BeforeEach
-    void createStorage(){
+    void createStorage() {
         filmStorage = new InMemoryFilmStorage();
     }
 
@@ -23,11 +23,11 @@ class InMemoryFilmStorageTest extends FilmStorageTest<InMemoryFilmStorage>{
         Film film = Film.builder()
                 .name("test 1")
                 .description("test 1 description")
-                .releaseDate(LocalDate.of(2000,10,10))
+                .releaseDate(LocalDate.of(2000, 10, 10))
                 .duration(3)
                 .build();
 
-        assertEquals(filmStorage.validateFilm(film),true);
+        assertEquals(filmStorage.validateFilm(film), true);
     }
 
     @Test
@@ -35,7 +35,7 @@ class InMemoryFilmStorageTest extends FilmStorageTest<InMemoryFilmStorage>{
         Film film = Film.builder()
                 .name("")
                 .description("test 1 description")
-                .releaseDate(LocalDate.of(2000,10,10))
+                .releaseDate(LocalDate.of(2000, 10, 10))
                 .duration(3)
                 .build();
 
@@ -51,7 +51,7 @@ class InMemoryFilmStorageTest extends FilmStorageTest<InMemoryFilmStorage>{
         Film film = Film.builder()
                 .name("test 1")
                 .description("1".repeat(201))
-                .releaseDate(LocalDate.of(2000,10,10))
+                .releaseDate(LocalDate.of(2000, 10, 10))
                 .duration(3)
                 .build();
 
@@ -67,7 +67,7 @@ class InMemoryFilmStorageTest extends FilmStorageTest<InMemoryFilmStorage>{
         Film film = Film.builder()
                 .name("test 1")
                 .description("test 1 description")
-                .releaseDate(LocalDate.of(1884,10,10))
+                .releaseDate(LocalDate.of(1884, 10, 10))
                 .duration(3)
                 .build();
 
@@ -83,7 +83,7 @@ class InMemoryFilmStorageTest extends FilmStorageTest<InMemoryFilmStorage>{
         Film film = Film.builder()
                 .name("test 1")
                 .description("test 1 description")
-                .releaseDate(LocalDate.of(2000,10,10))
+                .releaseDate(LocalDate.of(2000, 10, 10))
                 .duration(-1)
                 .build();
 
