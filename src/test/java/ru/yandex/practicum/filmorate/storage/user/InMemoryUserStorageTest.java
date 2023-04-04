@@ -26,7 +26,7 @@ class InMemoryUserStorageTest extends UserStorageTest<InMemoryUserStorage> {
                 .birthday(LocalDate.of(2001, 05, 10))
                 .build();
 
-        assertEquals(userStorage.validateUser(user), user);
+        assertEquals(userStorage.createUser(user), user);
     }
 
     @Test
@@ -40,7 +40,7 @@ class InMemoryUserStorageTest extends UserStorageTest<InMemoryUserStorage> {
 
         ValidationException exception = assertThrows(
                 ValidationException.class,
-                () -> userStorage.validateUser(user)
+                () -> userStorage.createUser(user)
         );
         assertEquals(exception.getMessage(),
                 "Электронная почта не может быть пустой и должна содержать символ @.");
@@ -57,7 +57,7 @@ class InMemoryUserStorageTest extends UserStorageTest<InMemoryUserStorage> {
 
         ValidationException exception = assertThrows(
                 ValidationException.class,
-                () -> userStorage.validateUser(user)
+                () -> userStorage.createUser(user)
         );
         assertEquals(exception.getMessage(),
                 "Электронная почта не может быть пустой и должна содержать символ @.");
@@ -74,7 +74,7 @@ class InMemoryUserStorageTest extends UserStorageTest<InMemoryUserStorage> {
 
         ValidationException exception = assertThrows(
                 ValidationException.class,
-                () -> userStorage.validateUser(user)
+                () -> userStorage.createUser(user)
         );
         assertEquals(exception.getMessage(), "Логин не может быть пустым и содержать пробелы.");
     }
@@ -90,13 +90,13 @@ class InMemoryUserStorageTest extends UserStorageTest<InMemoryUserStorage> {
 
         ValidationException exception = assertThrows(
                 ValidationException.class,
-                () -> userStorage.validateUser(user)
+                () -> userStorage.createUser(user)
         );
         assertEquals(exception.getMessage(), "Дата рождения не может быть в будущем.");
     }
 
     @Test
-    void validateEmptyName() throws ValidationException {
+    void createEmptyName() throws ValidationException {
         User user = User.builder()
                 .email("test@mail.ru")
                 .login("login")
@@ -104,12 +104,13 @@ class InMemoryUserStorageTest extends UserStorageTest<InMemoryUserStorage> {
                 .birthday(LocalDate.of(2001, 05, 10))
                 .build();
         User user2 = User.builder()
+                .id(1)
                 .email("test@mail.ru")
                 .login("login")
                 .name("login")
                 .birthday(LocalDate.of(2001, 05, 10))
                 .build();
 
-        assertEquals(userStorage.validateUser(user), user2);
+        assertEquals(userStorage.createUser(user), user2);
     }
 }

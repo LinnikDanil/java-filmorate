@@ -10,7 +10,6 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -58,18 +57,11 @@ public class UserService {
             throw new UserNotFoundException(String.format("Пользователя с id = %s не существует.", userId));
         }
         if (userStorage.getUserById(friendId) == null) {
-            throw new UserNotFoundException(String.format("Друга с id = %s не существует.", friendId));
+            throw new FriendNotFoundException(String.format("Друга с id = %s не существует.", friendId));
         }
         if (!userStorage.getUserById(userId).getFriends().contains(friendId)) {
-            throw new UserAlreadyExistException(
-                    String.format("У пользователя с id = %s нет друга с id = %s", userId, friendId));
-        }
-        if (userStorage.getUserById(userId).getFriends().stream()
-                .filter(id -> id.equals(friendId))
-                .collect(Collectors.toList())
-                .isEmpty()) {
             throw new FriendNotFoundException(
-                    String.format("У пользователя id = %s нет друга с id = %s.", userId, friendId));
+                    String.format("У пользователя с id = %s нет друга с id = %s", userId, friendId));
         }
 
         userStorage.getUserById(userId).deleteFriend(friendId);

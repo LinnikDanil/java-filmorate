@@ -56,7 +56,7 @@ public class InMemoryFilmStorage implements FilmStorage {
         }
     }
 
-    public boolean validateFilm(Film film) {
+    private boolean validateFilm(Film film) {
         if (film.getName() == null || film.getName().isBlank()) {
             throw new ValidationException("Название фильма не может быть пустым.");
         } else if (film.getDescription().length() > 200) {
@@ -69,7 +69,7 @@ public class InMemoryFilmStorage implements FilmStorage {
         return true;
     }
 
-    public Integer getNextId() {
+    private Integer getNextId() {
         return ++id;
     }
 

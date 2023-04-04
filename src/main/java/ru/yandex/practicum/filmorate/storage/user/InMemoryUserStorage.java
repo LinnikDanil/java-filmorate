@@ -57,7 +57,7 @@ public class InMemoryUserStorage implements UserStorage {
         }
     }
 
-    public User validateUser(User user) {
+    private User validateUser(User user) {
         if (user.getEmail().isEmpty() || !user.getEmail().contains("@")) {
             throw new ValidationException("Электронная почта не может быть пустой и должна содержать символ @.");
         } else if (user.getLogin().isBlank()) {
@@ -70,7 +70,7 @@ public class InMemoryUserStorage implements UserStorage {
         return user;
     }
 
-    public Integer getNextId() {
+    private Integer getNextId() {
         return ++id;
     }
 }

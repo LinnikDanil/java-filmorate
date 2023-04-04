@@ -1,6 +1,6 @@
 package ru.yandex.practicum.filmorate.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.IncorrectParameterException;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -11,26 +11,19 @@ import javax.validation.Valid;
 import java.util.*;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/films")
-
 public class FilmController {
-
     private final FilmStorage filmStorage;
     private final FilmService filmService;
 
-    @Autowired
-    public FilmController(FilmStorage filmStorage, FilmService filmService) {
-        this.filmStorage = filmStorage;
-        this.filmService = filmService;
-    }
-
-    @GetMapping //popular?count={count}
+    @GetMapping
     public Collection<Film> getAllFilms() {
         return filmStorage.getAllFilms();
     }
 
-    @GetMapping("/popular") //popular?count={count}
-    public Collection<Film> getAllFilms(@RequestParam(defaultValue = "10", required = false) Integer count) {
+    @GetMapping("/popular")
+    public Collection<Film> getPopularFilms(@RequestParam(defaultValue = "10") Integer count) {
         if (count == null || count < 1) {
             throw new IncorrectParameterException("count");
         }

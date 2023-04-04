@@ -28,10 +28,10 @@ public class User {
     private final Set<Integer> friends = new HashSet<>();
 
     public void addFriend(int friendId) {
-        getFriends().add(friendId);
+        friends.add(friendId);
     }
 
     public void deleteFriend(int friendId) {
-        getFriends().remove(friendId);
+        friends.remove(friendId);
     }
 }

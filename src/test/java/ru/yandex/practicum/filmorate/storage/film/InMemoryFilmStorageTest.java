@@ -19,7 +19,7 @@ class InMemoryFilmStorageTest extends FilmStorageTest<InMemoryFilmStorage> {
     }
 
     @Test
-    void validateOk() throws ValidationException {
+    void createOk() throws ValidationException {
         Film film = Film.builder()
                 .name("test 1")
                 .description("test 1 description")
@@ -27,11 +27,11 @@ class InMemoryFilmStorageTest extends FilmStorageTest<InMemoryFilmStorage> {
                 .duration(3)
                 .build();
 
-        assertEquals(filmStorage.validateFilm(film), true);
+        assertEquals(filmStorage.createFilm(film), film);
     }
 
     @Test
-    void validateWithEmptyName() {
+    void createWithEmptyName() {
         Film film = Film.builder()
                 .name("")
                 .description("test 1 description")
@@ -41,13 +41,13 @@ class InMemoryFilmStorageTest extends FilmStorageTest<InMemoryFilmStorage> {
 
         ValidationException exception = assertThrows(
                 ValidationException.class,
-                () -> filmStorage.validateFilm(film)
+                () -> filmStorage.createFilm(film)
         );
         assertEquals(exception.getMessage(), "Название фильма не может быть пустым.");
     }
 
     @Test
-    void validateWithDescription201elements() {
+    void createWithDescription201elements() {
         Film film = Film.builder()
                 .name("test 1")
                 .description("1".repeat(201))
@@ -57,13 +57,13 @@ class InMemoryFilmStorageTest extends FilmStorageTest<InMemoryFilmStorage> {
 
         ValidationException exception = assertThrows(
                 ValidationException.class,
-                () -> filmStorage.validateFilm(film)
+                () -> filmStorage.createFilm(film)
         );
         assertEquals(exception.getMessage(), "Максимальная длина описания - 200 символов.");
     }
 
     @Test
-    void validateWithDateBefore1895() {
+    void createWithDateBefore1895() {
         Film film = Film.builder()
                 .name("test 1")
                 .description("test 1 description")
@@ -73,13 +73,13 @@ class InMemoryFilmStorageTest extends FilmStorageTest<InMemoryFilmStorage> {
 
         ValidationException exception = assertThrows(
                 ValidationException.class,
-                () -> filmStorage.validateFilm(film)
+                () -> filmStorage.createFilm(film)
         );
         assertEquals(exception.getMessage(), "Дата релиза — не раньше 28 декабря 1895 года.");
     }
 
     @Test
-    void validateWithDurationIsNegative() {
+    void createWithDurationIsNegative() {
         Film film = Film.builder()
                 .name("test 1")
                 .description("test 1 description")
@@ -89,7 +89,7 @@ class InMemoryFilmStorageTest extends FilmStorageTest<InMemoryFilmStorage> {
 
         ValidationException exception = assertThrows(
                 ValidationException.class,
-                () -> filmStorage.validateFilm(film)
+                () -> filmStorage.createFilm(film)
         );
         assertEquals(exception.getMessage(), "Продолжительность фильма должна быть положительной.");
     }
