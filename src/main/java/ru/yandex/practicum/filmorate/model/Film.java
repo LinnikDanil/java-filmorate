@@ -26,15 +26,15 @@ public class Film {
     private LocalDate releaseDate;
 
     @Positive
-    private long duration; //Duration не проходит тесты, почитал в пачке, говорят ставить лонг
+    private long duration;
 
     private final Set<Integer> likes = new HashSet<>();
 
-    public void addLike(int filmId) {
-        likes.add(filmId);
+    public void addLike(int userId) {
+        likes.add(userId);
     }
 
-    public void deleteLike(int filmId) {
-        likes.remove(filmId);
+    public void deleteLike(int userId) {
+        likes.remove(userId);
     }
 }

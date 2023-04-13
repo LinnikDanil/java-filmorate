@@ -1,0 +1,44 @@
+Table users {
+  user_id integer [primary key]
+  email varchar
+  login varchar
+  name varchar
+  birthday timestamp
+  friend_id integer
+}
+
+Table films {
+  film_id integer [primary key]
+  name varchar
+  description varchar
+  release_date date
+  duration bigint
+  rating_MPA varchar
+}
+
+Table genre {
+  genre_id integer [primary key]
+  name varchar
+}
+
+Table film_genres {
+  film_id integer [primary key]
+  genre_id integer [primary key]
+}
+
+Table film_likes {
+  film_id integer [primary key]
+  user_id integer [primary key]
+}
+
+Table friends {
+user_id integer [ref: > users.user_id]
+friend_id integer [ref: > users.user_id]
+friendship_status varchar
+}
+
+Ref: films.film_id < film_genres.film_id
+Ref: genre.genre_id < film_genres.genre_id
+
+Ref: films.film_id < film_likes.film_id
+Ref: users.user_id < film_likes.user_id
