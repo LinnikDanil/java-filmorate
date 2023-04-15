@@ -1,24 +1,28 @@
 Table users {
-  user_id integer [primary key]
-  email varchar
-  login varchar
-  name varchar
-  birthday timestamp
-  friend_id integer
+  id integer [primary key]
+  email varchar (128)
+  login varchar (128)
+  name varchar (128)
+  birthday date
 }
 
 Table films {
-  film_id integer [primary key]
-  name varchar
+  id integer [primary key]
+  name varchar (255)
   description varchar
   release_date date
   duration bigint
-  rating_MPA varchar
+  rating_mpa_id integer [ref: < film_ratings_mpa.id]
+}
+
+Table film_ratings_mpa {
+  id integer [primary key]
+  name varchar(16)
 }
 
 Table genre {
-  genre_id integer [primary key]
-  name varchar
+  id integer [primary key]
+  name varchar (128)
 }
 
 Table film_genres {
@@ -32,13 +36,18 @@ Table film_likes {
 }
 
 Table friends {
-user_id integer [ref: > users.user_id]
-friend_id integer [ref: > users.user_id]
-friendship_status varchar
+user_id integer [ref: > users.id]
+friend_id integer [ref: > users.id]
+friendship_status_id integer [ref: > friendship_status.id]
 }
 
-Ref: films.film_id < film_genres.film_id
-Ref: genre.genre_id < film_genres.genre_id
+Table friendship_status {
+  id integer [primary key]
+  name varchar(255)
+}
 
-Ref: films.film_id < film_likes.film_id
-Ref: users.user_id < film_likes.user_id
+Ref: films.id < film_genres.film_id
+Ref: genre.id < film_genres.genre_id
+
+Ref: films.id < film_likes.film_id
+Ref: users.id < film_likes.user_id

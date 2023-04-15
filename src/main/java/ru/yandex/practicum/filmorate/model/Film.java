@@ -28,6 +28,10 @@ public class Film {
     @Positive
     private long duration;
 
+    private Set<Integer> genres;
+
+    private int ratingMPA;
+
     private final Set<Integer> likes = new HashSet<>();
 
     public void addLike(int userId) {
