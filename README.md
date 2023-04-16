@@ -21,13 +21,15 @@ FROM films;
 ```SQL
 SELECT *
 FROM films
-WHERE film_id = 'id';
+WHERE film_id = ?;
 ```
 *3. Получить 10 самых популярных фильмов*
 ```SQL
-SELECT *
-FROM films
-LEFT OUTER JOIN film_likes ON films.film_id=film_likes.film_id
+SELECT * 
+FROM films f 
+JOIN film_ratings_mpa mpa ON f.rating_mpa_id = mpa.mpa_id
+WHERE f.ID IN (SELECT f.ID FROM FILMS f LEFT JOIN FILM_LIKES fl ON f.ID = fl.FILM_ID
+GROUP BY f.ID ORDER BY COUNT(fl.USER_ID) DESC LIMIT ?)
 ```
 
 
@@ -35,22 +37,27 @@ LEFT OUTER JOIN film_likes ON films.film_id=film_likes.film_id
 
 *1. Получить всех пользователей*
 ```SQL
-SELECT *
-FROM films;
+SELECT * 
+FROM users
 ```
 *2. Получить пользователя по id*
 ```SQL
-SELECT *
-FROM films;
+SELECT * 
+FROM users 
+WHERE id = ?
 ```
 *3. Получить всех друзей пользователя*
 ```SQL
-SELECT *
-FROM films;
+SELECT u.* 
+FROM FRIENDS f 
+JOIN USERS u ON f.friend_id = u.ID 
+WHERE f.user_id = ?
 ```
-*4. Получить друга пользователя по id*
+*4. Получить общих друзей*
 ```SQL
-SELECT *
-FROM films;
+SELECT * 
+FROM USERS
+WHERE id IN (SELECT f1.FRIEND_ID FROM FRIENDS f1 
+LEFT JOIN FRIENDS f2 ON f1.FRIEND_ID = f2.FRIEND_ID
+WHERE F1.USER_ID = ? AND F2.USER_ID = ?)
 ```
-*5. Получить общих друзей*
