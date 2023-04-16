@@ -20,13 +20,13 @@ public class GenreDaoImpl implements GenreStorage {
 
     @Override
     public Collection<FilmGenres> getAllGenres() {
-        return jdbcTemplate.query("SELECT * FROM genres", FilmGenreRowMapper());
+        return jdbcTemplate.query("SELECT * FROM genres", filmGenreRowMapper());
     }
 
     @Override
     public FilmGenres getGenreById(int genreId) {
         List<FilmGenres> genres = jdbcTemplate.query(
-                "SELECT * FROM genres WHERE id = ?", FilmGenreRowMapper(), genreId);
+                "SELECT * FROM genres WHERE id = ?", filmGenreRowMapper(), genreId);
         if (genres.size() != 1) {
             throw new FilmNotFoundException(String.format("Жанра с id = %d не существует", genreId));
         }

@@ -20,20 +20,20 @@ public class MpaDaoImpl implements RatingMpaStorage {
 
     @Override
     public Collection<FilmRatingsMPA> getAllRatings() {
-        return jdbcTemplate.query("SELECT * FROM film_ratings_mpa", FilmRatingRowMapper());
+        return jdbcTemplate.query("SELECT * FROM film_ratings_mpa", filmRatingRowMapper());
     }
 
     @Override
     public FilmRatingsMPA getRatingById(int ratingId) {
         List<FilmRatingsMPA> ratings = jdbcTemplate.query(
-                "SELECT * FROM film_ratings_mpa WHERE mpa_id = ?", FilmRatingRowMapper(), ratingId);
+                "SELECT * FROM film_ratings_mpa WHERE mpa_id = ?", filmRatingRowMapper(), ratingId);
         if (ratings.size() != 1) {
             throw new FilmNotFoundException(String.format("MPA с id = %d не существует", ratingId));
         }
         return ratings.get(0);
     }
 
-    private RowMapper<FilmRatingsMPA> FilmRatingRowMapper() {
+    private RowMapper<FilmRatingsMPA> filmRatingRowMapper() {
         return (rs, rowNum) -> FilmRatingsMPA.builder()
                 .id(rs.getInt("mpa_id"))
                 .name(rs.getString("mpa_name"))
