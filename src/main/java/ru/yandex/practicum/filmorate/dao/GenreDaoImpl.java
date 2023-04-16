@@ -33,7 +33,7 @@ public class GenreDaoImpl implements GenreStorage {
         return genres.get(0);
     }
 
-    private RowMapper<FilmGenres> FilmGenreRowMapper() {
+    private RowMapper<FilmGenres> filmGenreRowMapper() {
         return (rs, rowNum) -> FilmGenres.builder()
                 .id(rs.getInt("id"))
                 .name(rs.getString("name"))
