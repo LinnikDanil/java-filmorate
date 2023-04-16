@@ -18,7 +18,7 @@ WHERE NOT EXISTS (
 );
 
 
-INSERT INTO film_ratings_mpa (name)
+INSERT INTO film_ratings_mpa (mpa_name)
 SELECT * FROM (
     VALUES ('G'),
            ('PG'),
@@ -27,8 +27,8 @@ SELECT * FROM (
            ('NC-17')
 )
 WHERE NOT EXISTS (
-    SELECT name FROM film_ratings_mpa
-    WHERE name IN ('G',
+    SELECT mpa_name FROM film_ratings_mpa
+    WHERE mpa_name IN ('G',
                    'PG',
                    'PG-13',
                    'R',

@@ -3,12 +3,15 @@ package ru.yandex.practicum.filmorate.storage.film;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
+import ru.yandex.practicum.filmorate.exception.UserAlreadyExistException;
+import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.FilmLikes;
 
-import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -56,17 +59,37 @@ public class InMemoryFilmStorage implements FilmStorage {
         }
     }
 
-    private boolean validateFilm(Film film) {
-        if (film.getName() == null || film.getName().isBlank()) {
-            throw new ValidationException("Название фильма не может быть пустым.");
-        } else if (film.getDescription().length() > 200) {
-            throw new ValidationException("Максимальная длина описания - 200 символов.");
-        } else if (film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28))) {
-            throw new ValidationException("Дата релиза — не раньше 28 декабря 1895 года.");
-        } else if (film.getDuration() < 0) {
-            throw new ValidationException("Продолжительность фильма должна быть положительной.");
+    @Override
+    public List<Film> getPopularFilms(int count) {
+        return getAllFilms()
+                .stream()
+                .sorted((f1, f2) -> (f2.getLikes().size() - f1.getLikes().size()))
+                .limit(count)
+                .collect(Collectors.toList());
+    }
+
+    public Integer addLike(int filmId, int userId) {
+        if (getFilmById(filmId) == null) {
+            throw new FilmNotFoundException(String.format("Фильма с id = %s не существует.", filmId));
         }
-        return true;
+        if (getFilmById(filmId).getLikes().contains(userId)) {
+            throw new UserAlreadyExistException(String.format("Пользователь с id = %s уже лайкал этот фильм.", userId));
+        }
+
+        getFilmById(filmId).getLikes().add(new FilmLikes(filmId, userId));
+        return getFilmById(filmId).getLikes().size();
+    }
+
+    public Integer deleteLike(int filmId, int userId) {
+        if (getFilmById(filmId) == null) {
+            throw new FilmNotFoundException(String.format("Фильма с id = %s не существует.", filmId));
+        }
+        if (!getFilmById(filmId).getLikes().contains(userId)) {
+            throw new UserNotFoundException(String.format("Пользователь с id = %s не лайкал этот фильм.", userId));
+        }
+
+        getFilmById(filmId).getLikes().remove(filmId);
+        return getFilmById(filmId).getLikes().size();
     }
 
     private Integer getNextId() {

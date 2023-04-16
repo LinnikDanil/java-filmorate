@@ -19,8 +19,8 @@ CREATE TABLE IF NOT EXISTS friends (
 );
 
 CREATE TABLE IF NOT EXISTS film_ratings_mpa (
-  id SERIAL NOT NULL PRIMARY KEY,
-  name VARCHAR(16) NOT NULL
+  mpa_id SERIAL NOT NULL PRIMARY KEY,
+  mpa_name VARCHAR(16) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS films (
@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS films (
 	description varchar NOT NULL,
 	release_date DATE NOT NULL,
 	duration bigint NOT NULL,
-	rating_mpa_id INTEGER NOT NULL REFERENCES film_ratings_mpa(id)
+	rating_mpa_id INTEGER NOT NULL REFERENCES film_ratings_mpa(mpa_id)
 );
 
 CREATE TABLE IF NOT EXISTS genres (

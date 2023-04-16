@@ -28,17 +28,9 @@ public class Film {
     @Positive
     private long duration;
 
-    private Set<Integer> genres;
+    private final Set<FilmGenres> genres = new HashSet<>();
 
-    private int ratingMPA;
+    private FilmRatingsMPA mpa;
 
-    private final Set<Integer> likes = new HashSet<>();
-
-    public void addLike(int userId) {
-        likes.add(userId);
-    }
-
-    public void deleteLike(int userId) {
-        likes.remove(userId);
-    }
+    private final Set<FilmLikes> likes = new HashSet<>();
 }

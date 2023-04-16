@@ -2,13 +2,13 @@ package ru.yandex.practicum.filmorate.storage.user;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.exception.FriendNotFoundException;
+import ru.yandex.practicum.filmorate.exception.UserAlreadyExistException;
+import ru.yandex.practicum.filmorate.exception.UserCannotBeHisFriend;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
-import java.time.LocalDate;
-import java.util.Collection;
-import java.util.HashMap;
+import java.util.*;
 
 @Slf4j
 @Component
@@ -57,17 +57,80 @@ public class InMemoryUserStorage implements UserStorage {
         }
     }
 
-    private User validateUser(User user) {
-        if (user.getEmail().isEmpty() || !user.getEmail().contains("@")) {
-            throw new ValidationException("Электронная почта не может быть пустой и должна содержать символ @.");
-        } else if (user.getLogin().isBlank()) {
-            throw new ValidationException("Логин не может быть пустым и содержать пробелы.");
-        } else if (user.getBirthday().isAfter(LocalDate.now())) {
-            throw new ValidationException("Дата рождения не может быть в будущем.");
-        } else if (user.getName() == null || user.getName().isBlank()) {
-            user.setName(user.getLogin());
+    @Override
+    public Collection<User> getAllFriends(int userId) {
+        if (getUserById(userId) == null) {
+            throw new UserNotFoundException(String.format("Пользователя с id = %s не существует.", userId));
         }
-        return user;
+        List<User> allFriends = new ArrayList<>();
+        User user = getUserById(userId);
+        for (int friendId : user.getFriends()) {
+            allFriends.add(getUserById(friendId));
+        }
+        return allFriends;
+    }
+
+    @Override
+    public Integer addToFriends(int userId, int friendId) {
+        if (getUserById(userId) == null) {
+            throw new UserNotFoundException(String.format("Пользователя с id = %s не существует.", userId));
+        }
+        if (getUserById(friendId) == null) {
+            throw new UserNotFoundException(String.format("Друга с id = %s не существует.", friendId));
+        }
+        if (getUserById(userId).getFriends().contains(friendId)) {
+            throw new UserAlreadyExistException(
+                    String.format("У пользователя с id = %s уже есть друг с id = %s", userId, friendId));
+        }
+        if (friendId == userId) {
+            throw new UserCannotBeHisFriend("Пользователь не может стать своим другом");
+        }
+
+        getUserById(userId).addFriend(friendId);
+        getUserById(friendId).addFriend(userId);
+        return getUserById(userId).getFriends().size();
+    }
+
+    @Override
+    public Integer deleteFromFriends(int userId, int friendId) {
+        if (getUserById(userId) == null) {
+            throw new UserNotFoundException(String.format("Пользователя с id = %s не существует.", userId));
+        }
+        if (getUserById(friendId) == null) {
+            throw new FriendNotFoundException(String.format("Друга с id = %s не существует.", friendId));
+        }
+        if (!getUserById(userId).getFriends().contains(friendId)) {
+            throw new FriendNotFoundException(
+                    String.format("У пользователя с id = %s нет друга с id = %s", userId, friendId));
+        }
+
+        getUserById(userId).deleteFriend(friendId);
+        getUserById(friendId).deleteFriend(userId);
+        return getUserById(userId).getFriends().size();
+    }
+
+    @Override
+    public Collection<User> getCommonFriends(int userId, int friendId) {
+        if (getUserById(userId) == null) {
+            throw new UserNotFoundException(String.format("Пользователя с id = %s не существует.", userId));
+        }
+        if (getUserById(friendId) == null) {
+            throw new UserNotFoundException(String.format("Друга с id = %s не существует.", friendId));
+        }
+        if (getUserById(friendId).getFriends() == null) {
+            return Collections.emptyList();
+        }
+
+        Set<Integer> userFriends = getUserById(userId).getFriends();
+        Set<Integer> friendFriends = getUserById(friendId).getFriends();
+
+        List<User> commonUsers = new ArrayList<>();
+        for (Integer user : userFriends) {
+            if (friendFriends.contains(user)) {
+                commonUsers.add(getUserById(user));
+            }
+        }
+        return commonUsers;
     }
 
     private Integer getNextId() {
