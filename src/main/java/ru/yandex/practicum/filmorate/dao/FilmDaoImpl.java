@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.dao;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -11,12 +12,13 @@ import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.exception.UserAlreadyExistException;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.model.*;
-import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -44,9 +46,17 @@ public class FilmDaoImpl implements FilmStorage {
 
     @Override
     public Collection<Film> getPopularFilms(int count) {
-        String sql = "SELECT * FROM films f JOIN film_ratings_mpa mpa ON f.rating_mpa_id = mpa.mpa_id " +
-                "WHERE f.ID IN (SELECT f.ID FROM FILMS f LEFT JOIN FILM_LIKES fl ON f.ID = fl.FILM_ID " +
-                "GROUP BY f.ID ORDER BY COUNT(fl.USER_ID) DESC LIMIT ?)";
+        String sql = "SELECT " +
+                "* " +
+                "FROM films f " +
+                "JOIN film_ratings_mpa mpa ON f.rating_mpa_id = mpa.mpa_id " +
+                "WHERE f.ID IN (SELECT f.ID " +
+                "FROM FILMS f " +
+                "LEFT JOIN FILM_LIKES fl ON f.ID = fl.FILM_ID " +
+                "GROUP BY f.ID " +
+                "ORDER BY COUNT(fl.USER_ID) DESC " +
+                "LIMIT ?)";
+        //Я немного не понял, как правильно форматировать запросы, попробовал сделать так, как делали в pgAdmin
         return jdbcTemplate.query(sql, this::filmRowMapper, count);
     }
 
@@ -189,10 +199,21 @@ public class FilmDaoImpl implements FilmStorage {
 
     private void addGenresRelation(Film film) {
         if (!film.getGenres().isEmpty()) {
-            for (FilmGenres genre : film.getGenres()) {
-                String sql = "MERGE INTO FILM_GENRES (FILM_ID, GENRE_ID) KEY (FILM_ID, GENRE_ID) VALUES (?, ?)";
-                jdbcTemplate.update(sql, film.getId(), genre.getId());
-            }
+            String sql = "MERGE INTO FILM_GENRES (FILM_ID, GENRE_ID) KEY (FILM_ID, GENRE_ID) VALUES (?, ?)";
+            jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
+                @Override
+                public void setValues(PreparedStatement ps, int i) throws SQLException {
+                    List<FilmGenres> genresList = new ArrayList<>();
+                    genresList.addAll(film.getGenres());
+                    ps.setInt(1, film.getId());
+                    ps.setInt(2, genresList.get(i).getId());
+                }
+
+                @Override
+                public int getBatchSize() {
+                    return film.getGenres().size();
+                }
+            });
         }
     }
 

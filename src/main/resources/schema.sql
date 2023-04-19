@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS film_ratings_mpa (
 CREATE TABLE IF NOT EXISTS films (
 	id SERIAL NOT NULL PRIMARY KEY,
 	name varchar(256) NOT NULL,
-	description varchar NOT NULL,
+	description varchar(2048) NOT NULL,
 	release_date DATE NOT NULL,
 	duration bigint NOT NULL,
 	rating_mpa_id INTEGER NOT NULL REFERENCES film_ratings_mpa(mpa_id)
