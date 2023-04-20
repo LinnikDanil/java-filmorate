@@ -1,11 +1,11 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.IncorrectParameterException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.service.FilmService;
-import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
 import javax.validation.Valid;
 import java.util.*;
@@ -14,8 +14,8 @@ import java.util.*;
 @RequiredArgsConstructor
 @RequestMapping("/films")
 public class FilmController {
+    @Qualifier("filmDaoImpl")
     private final FilmStorage filmStorage;
-    private final FilmService filmService;
 
     @GetMapping
     public Collection<Film> getAllFilms() {
@@ -27,7 +27,7 @@ public class FilmController {
         if (count == null || count < 1) {
             throw new IncorrectParameterException("count");
         }
-        return filmService.getMostPopularFilms(count);
+        return filmStorage.getPopularFilms(count);
     }
 
     @GetMapping("/{filmId}")
@@ -47,11 +47,12 @@ public class FilmController {
 
     @PutMapping("/{filmId}/like/{userId}")
     public Integer addLikeFilm(@PathVariable Integer filmId, @PathVariable Integer userId) {
-        return filmService.addLike(filmId, userId);
+        return filmStorage.addLike(filmId, userId);
     }
 
     @DeleteMapping("/{filmId}/like/{userId}")
     public Integer deleteLikeFilm(@PathVariable Integer filmId, @PathVariable Integer userId) {
-        return filmService.deleteLike(filmId, userId);
+        return filmStorage.deleteLike(filmId, userId);
     }
+
 }

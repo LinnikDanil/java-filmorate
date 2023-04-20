@@ -1,22 +1,21 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.service.UserService;
-import ru.yandex.practicum.filmorate.storage.user.UserStorage;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import javax.validation.Valid;
 import java.util.Collection;
-import java.util.List;
 
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/users")
 public class UserController {
+    @Qualifier("userDaoImpl")
     private final UserStorage userStorage;
-    private final UserService userService;
 
     @GetMapping
     public Collection<User> getAll() {
@@ -30,7 +29,7 @@ public class UserController {
 
     @GetMapping("{userId}/friends/common/{friendId}")
     public Collection<User> getCommonFriends(@PathVariable Integer userId, @PathVariable Integer friendId) {
-        return userService.getCommonFriends(userId, friendId);
+        return userStorage.getCommonFriends(userId, friendId);
     }
 
     @PostMapping
@@ -44,17 +43,17 @@ public class UserController {
     }
 
     @GetMapping("/{userId}/friends")
-    public List<User> getAllFriends(@PathVariable Integer userId) {
-        return userService.getAllFriends(userId);
+    public Collection<User> getAllFriends(@PathVariable Integer userId) {
+        return userStorage.getAllFriends(userId);
     }
 
     @PutMapping("/{userId}/friends/{friendId}")
     public Integer addFriend(@PathVariable Integer userId, @PathVariable Integer friendId) {
-        return userService.addToFriends(userId, friendId);
+        return userStorage.addToFriends(userId, friendId);
     }
 
     @DeleteMapping("/{userId}/friends/{friendId}")
     public Integer deleteFriend(@PathVariable Integer userId, @PathVariable Integer friendId) {
-        return userService.deleteFromFriends(userId, friendId);
+        return userStorage.deleteFromFriends(userId, friendId);
     }
 }
